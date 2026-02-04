@@ -35,6 +35,10 @@ pub fn run() {
         .setup(|app| {
             #[cfg(desktop)]
             {
+                let _ = app.handle().plugin(tauri_plugin_window_state::Builder::default().build());
+            }
+            #[cfg(desktop)]
+            {
                 let shortcut_str = "Ctrl+Shift+Space";
                 if let Err(e) = app.global_shortcut().register(shortcut_str) {
                     eprintln!("Failed to register shortcut '{}': {}", shortcut_str, e);
@@ -106,6 +110,8 @@ pub fn run() {
 
 #[cfg(target_os = "windows")]
 fn open_settings_window(app: &AppHandle) {
+    use tauri_plugin_window_state::{StateFlags, WindowExt};
+
     if let Some(window) = app.get_webview_window("settings") {
         let _ = window.show();
         let _ = window.set_focus();
@@ -121,8 +127,10 @@ fn open_settings_window(app: &AppHandle) {
     .center()
     .decorations(false)
     .transparent(true)
+    .visible(false)
     .build()
     .map(|w| {
+        let _ = w.restore_state(StateFlags::all());
         let _ = w.show();
         let _ = w.set_focus();
     });
