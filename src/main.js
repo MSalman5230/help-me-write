@@ -22,7 +22,6 @@ window.addEventListener("DOMContentLoaded", () => {
   const explanationDiv = document.getElementById("explanation");
   const diffArea = document.getElementById("diff-area");
   const fixBtn = document.getElementById("fix-btn");
-  const applyBtn = document.getElementById("apply-btn");
   const loadingDiv = document.getElementById("loading");
 
   // Listen for text from backend
@@ -32,7 +31,6 @@ window.addEventListener("DOMContentLoaded", () => {
     originalTextArea.value = text;
 
     diffArea.classList.add("hidden");
-    applyBtn.classList.add("hidden");
     fixBtn.classList.remove("hidden");
     correctedTextArea.value = "";
     explanationDiv.innerText = "";
@@ -46,13 +44,12 @@ window.addEventListener("DOMContentLoaded", () => {
   // Sync original text from user input (editable textarea)
   originalTextArea.addEventListener("input", () => {
     originalText = originalTextArea.value;
+    fixBtn.classList.remove("hidden");
+    updateFixButtonState();
     if (!correctedTextArea.value.trim()) {
-      fixBtn.classList.remove("hidden");
-      applyBtn.classList.add("hidden");
       diffArea.classList.add("hidden");
       correctedTextArea.value = "";
       explanationDiv.innerText = "";
-      updateFixButtonState();
     }
   });
 
@@ -75,25 +72,11 @@ window.addEventListener("DOMContentLoaded", () => {
       explanationDiv.innerText = result.explanation || "";
 
       diffArea.classList.remove("hidden");
-      fixBtn.classList.add("hidden");
-      applyBtn.classList.remove("hidden");
     } catch (error) {
       log("Error fixing grammar: " + error);
       alert("Error fixing grammar: " + error);
     } finally {
       loadingDiv.classList.add("hidden");
-    }
-  });
-
-  applyBtn.addEventListener("click", async () => {
-    log("Apply Button Clicked");
-    const textToApply = correctedTextArea.value;
-    try {
-      await invoke("apply_fix_command", { text: textToApply });
-      await getCurrentWindow().hide();
-    } catch (e) {
-      log("Failed to apply: " + e);
-      alert("Failed to apply: " + e);
     }
   });
 

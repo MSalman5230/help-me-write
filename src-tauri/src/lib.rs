@@ -94,7 +94,6 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             commands::fix_grammar_command,
-            commands::apply_fix_command,
             commands::get_settings_command,
             commands::save_settings_command,
             commands::debug_log
@@ -129,6 +128,7 @@ fn open_settings_window(app: &AppHandle) {
 fn open_popup_window(app: &AppHandle, text: String) {
     if let Some(window) = app.get_webview_window("main") {
         let _ = window.emit("set-text", text);
+        let _ = window.unminimize();
         let _ = window.show();
         let _ = window.set_focus();
     }

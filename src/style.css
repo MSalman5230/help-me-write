@@ -38,8 +38,10 @@ body {
 .app-popup {
   display: flex;
   flex-direction: column;
+  width: 100%;
   height: 100vh;
-  padding: var(--space-2);
+  min-width: 280px;
+  padding: clamp(var(--space-1), 2vmin, var(--space-2));
   overflow: hidden;
 }
 
@@ -78,7 +80,7 @@ body {
 }
 
 .app-popup .section {
-  flex: 1;
+  flex: 1 1 0;
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -99,8 +101,8 @@ body {
 }
 
 .app-popup .text-area {
-  flex: 1;
-  min-height: 80px;
+  flex: 1 1 0;
+  min-height: 140px;
   width: 100%;
   padding: var(--space-2);
   border: 1px solid var(--border);
@@ -132,13 +134,16 @@ body {
 
 .app-popup .actions {
   display: flex;
+  justify-content: center;
   gap: var(--space-1);
   flex-shrink: 0;
   margin-top: var(--space-2);
 }
 
 .app-popup .btn {
-  flex: 1;
+  flex: 0 0 auto;
+  min-width: 88px;
+  max-width: 160px;
   padding: var(--space-1) var(--space-2);
   border: none;
   border-radius: var(--radius);
@@ -201,12 +206,13 @@ body {
 /* ----- Settings ----- */
 .page-settings {
   min-height: 100vh;
-  padding: var(--space-4) var(--space-2);
+  padding: clamp(var(--space-2), 4vmin, var(--space-4)) clamp(var(--space-1), 2vmin, var(--space-2));
 }
 
 .settings-container {
   max-width: 420px;
   margin: 0 auto;
+  padding: 0 clamp(var(--space-1), 2vmin, var(--space-2));
 }
 
 .settings-container .title {
@@ -267,9 +273,13 @@ body {
   display: flex;
   gap: var(--space-1);
   margin-top: var(--space-3);
+  flex-wrap: wrap;
 }
 
 .settings-container .btn-primary {
+  flex: 1 1 0;
+  min-width: 88px;
+  max-width: 160px;
   padding: var(--space-1) var(--space-2);
   border: none;
   border-radius: var(--radius);
@@ -292,6 +302,9 @@ body {
 }
 
 .settings-container .btn-secondary {
+  flex: 1 1 0;
+  min-width: 88px;
+  max-width: 160px;
   padding: var(--space-1) var(--space-2);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -306,4 +319,54 @@ body {
 
 .settings-container .btn-secondary:hover {
   background: var(--border);
+}
+
+/* ----- Responsive: short and narrow viewports ----- */
+@media (max-height: 420px) {
+  .app-popup {
+    padding: var(--space-1);
+  }
+
+  .app-popup .header {
+    margin-bottom: var(--space-1);
+  }
+
+  .app-popup .section {
+    margin-bottom: var(--space-1);
+  }
+
+  .app-popup .text-area {
+    min-height: 80px;
+    max-height: min(50vh, 220px);
+  }
+
+  .app-popup .actions {
+    margin-top: var(--space-1);
+  }
+
+  .app-popup .drag-handle {
+    height: 24px;
+  }
+
+  .app-popup .close-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 320px) {
+  .app-popup {
+    min-width: 260px;
+    padding: var(--space-1);
+  }
+
+  .page-settings {
+    padding: var(--space-2) var(--space-1);
+  }
+
+  .settings-container {
+    padding-left: var(--space-1);
+    padding-right: var(--space-1);
+  }
 }

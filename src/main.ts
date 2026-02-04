@@ -24,7 +24,6 @@ const correctedTextArea = document.getElementById("corrected-text") as HTMLTextA
 const explanationDiv = document.getElementById("explanation") as HTMLDivElement;
 const diffArea = document.getElementById("diff-area") as HTMLDivElement;
 const fixBtn = document.getElementById("fix-btn") as HTMLButtonElement;
-const applyBtn = document.getElementById("apply-btn") as HTMLButtonElement;
 const loadingDiv = document.getElementById("loading") as HTMLDivElement;
 
 // Listen for text from backend
@@ -35,7 +34,6 @@ listen("set-text", (event) => {
 
   // Reset UI
   diffArea.classList.add("hidden");
-  applyBtn.classList.add("hidden");
   fixBtn.classList.remove("hidden");
   correctedTextArea.value = "";
   explanationDiv.innerText = "";
@@ -49,13 +47,12 @@ function updateFixButtonState() {
 // Sync original text from user input (editable textarea)
 originalTextArea.addEventListener("input", () => {
   originalText = originalTextArea.value;
+  fixBtn.classList.remove("hidden");
+  updateFixButtonState();
   if (!correctedTextArea.value.trim()) {
-    fixBtn.classList.remove("hidden");
-    applyBtn.classList.add("hidden");
     diffArea.classList.add("hidden");
     correctedTextArea.value = "";
     explanationDiv.innerText = "";
-    updateFixButtonState();
   }
 });
 
@@ -78,27 +75,11 @@ fixBtn.addEventListener("click", async () => {
     explanationDiv.innerText = result.explanation || "";
 
     diffArea.classList.remove("hidden");
-    fixBtn.classList.add("hidden");
-    applyBtn.classList.remove("hidden");
   } catch (error) {
     log("Error fixing grammar: " + error);
     alert("Error fixing grammar: " + error);
   } finally {
     loadingDiv.classList.add("hidden");
-  }
-});
-
-applyBtn.addEventListener("click", async () => {
-  log("Apply Button Clicked");
-  // Implement Apply Logic (call backend to replace text)
-  // If user edited the corrected text, use that
-  const textToApply = correctedTextArea.value;
-  try {
-    await invoke("apply_fix_command", { text: textToApply });
-    await getCurrentWindow().hide();
-  } catch (e) {
-    log("Failed to apply: " + e);
-    alert("Failed to apply: " + e);
   }
 });
 
