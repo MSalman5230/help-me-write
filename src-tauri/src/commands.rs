@@ -1,9 +1,21 @@
 use crate::ai;
 use crate::accessibility::{AccessibilityService, PlatformAccessibility};
+use crate::settings;
 
 #[tauri::command]
-pub async fn fix_grammar_command(text: String) -> Result<ai::Correction, String> {
-    ai::fix_grammar(text).await
+pub async fn fix_grammar_command(app: tauri::AppHandle, text: String) -> Result<ai::Correction, String> {
+    let cfg = settings::load_settings(&app).unwrap_or_default();
+    ai::fix_grammar_with_config(text, &cfg).await
+}
+
+#[tauri::command]
+pub fn get_settings_command(app: tauri::AppHandle) -> Result<settings::AppSettings, String> {
+    settings::load_settings(&app)
+}
+
+#[tauri::command]
+pub fn save_settings_command(app: tauri::AppHandle, settings: settings::AppSettings) -> Result<(), String> {
+    settings::save_settings(&app, &settings)
 }
 
 #[tauri::command]

@@ -1,3 +1,4 @@
+use crate::settings::AppSettings;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -52,22 +53,32 @@ fn default_model_for_base(base: &str) -> &'static str {
     }
 }
 
-fn load_config() -> Result<(String, String, String), String> {
-    let base = std::env::var("OPENAI_API_BASE")
-        .unwrap_or_else(|_| "http://localhost:11434/v1".to_string());
-    let key = std::env::var("OPENAI_API_KEY").unwrap_or_else(|_| "ollama".to_string());
-    let model = std::env::var("OPENAI_MODEL").unwrap_or_else(|_| {
-        default_model_for_base(&base).to_string()
-    });
-    Ok((base, key, model))
-}
-
-const SYSTEM_PROMPT: &str = r#"You are a grammar and style fixer. Given the user's text, reply with ONLY a single JSON object (no other text, no markdown). Use this exact shape:
+const DEFAULT_SYSTEM_PROMPT: &str = r#"You are a grammar and style fixer. Given the user's text, reply with ONLY a single JSON object (no other text, no markdown). Use this exact shape:
 {"corrected": "<the corrected text>", "explanation": "<brief explanation of changes>"}
 The "explanation" field may be null or a short string. Output nothing but valid JSON."#;
 
-pub async fn fix_grammar(text: String) -> Result<Correction, String> {
-    let (base, key, model) = load_config()?;
+pub async fn fix_grammar_with_config(text: String, config: &AppSettings) -> Result<Correction, String> {
+    let base = config.api_base.trim();
+    let base = if base.is_empty() {
+        std::env::var("OPENAI_API_BASE").unwrap_or_else(|_| "http://localhost:11434/v1".to_string())
+    } else {
+        base.to_string()
+    };
+    let key = if config.api_key.is_empty() {
+        std::env::var("OPENAI_API_KEY").unwrap_or_else(|_| "ollama".to_string())
+    } else {
+        config.api_key.clone()
+    };
+    let model = if config.model.is_empty() {
+        std::env::var("OPENAI_MODEL").unwrap_or_else(|_| default_model_for_base(&base).to_string())
+    } else {
+        config.model.clone()
+    };
+    let system_prompt = if config.system_prompt.is_empty() {
+        DEFAULT_SYSTEM_PROMPT.to_string()
+    } else {
+        config.system_prompt.clone()
+    };
 
     let url = format!("{}/chat/completions", base.trim_end_matches('/'));
     let client = reqwest::Client::builder()
@@ -76,11 +87,11 @@ pub async fn fix_grammar(text: String) -> Result<Correction, String> {
         .map_err(|e| e.to_string())?;
 
     let req = ChatRequest {
-        model: model.clone(),
+        model,
         messages: vec![
             ChatMessage {
                 role: "system".to_string(),
-                content: SYSTEM_PROMPT.to_string(),
+                content: system_prompt,
             },
             ChatMessage {
                 role: "user".to_string(),

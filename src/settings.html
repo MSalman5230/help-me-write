@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings - AI Grammar Fixer</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .settings-container { max-width: 480px; margin: 20px auto; padding: 0 16px; }
+    .settings-container h1 { font-size: 1.25rem; margin-bottom: 16px; }
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-weight: 500; margin-bottom: 4px; font-size: 0.9rem; }
+    .field input, .field textarea { width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: inherit; }
+    .field textarea { min-height: 120px; resize: vertical; }
+    .field input[type="password"] { font-family: inherit; }
+    .actions { margin-top: 20px; display: flex; gap: 10px; }
+    .actions button { padding: 8px 16px; border-radius: 6px; border: 1px solid #ccc; cursor: pointer; font-size: 0.9rem; }
+    .btn-primary { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+    .btn-primary:hover { opacity: 0.9; }
+    .hint { font-size: 0.8rem; color: #666; margin-top: 2px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="settings-container">
+      <h1>Settings</h1>
+      <form id="settings-form">
+        <div class="field">
+          <label for="api-base">API base URL</label>
+          <input type="text" id="api-base" placeholder="e.g. http://localhost:11434/v1" />
+          <div class="hint">OpenAI-compatible API endpoint (e.g. Ollama, OpenAI).</div>
+        </div>
+        <div class="field">
+          <label for="api-key">API key</label>
+          <input type="password" id="api-key" placeholder="Leave empty for Ollama" autocomplete="off" />
+        </div>
+        <div class="field">
+          <label for="model">Model</label>
+          <input type="text" id="model" placeholder="e.g. gemma3, gpt-4" />
+          <div class="hint">Model name used for chat completions.</div>
+        </div>
+        <div class="field">
+          <label for="system-prompt">System prompt</label>
+          <textarea id="system-prompt" placeholder="Instructions for the AI grammar fixer..."></textarea>
+        </div>
+        <div class="actions">
+          <button type="submit" class="btn-primary" id="save-btn">Save</button>
+          <button type="button" id="close-btn">Close</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script src="settings.js"></script>
+</body>
+</html>

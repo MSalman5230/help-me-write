@@ -1,6 +1,7 @@
 mod accessibility;
 mod ai;
 mod commands;
+mod settings;
 
 use tauri::{AppHandle, Manager, Emitter};
 use tauri_plugin_global_shortcut::{Code, Modifiers, ShortcutState, Shortcut};
@@ -51,15 +52,66 @@ pub fn run() {
                     }
                 }
             }
+            #[cfg(target_os = "windows")]
+            {
+                use tauri::menu::{Menu, MenuItem};
+                use tauri::tray::TrayIconBuilder;
+                use tauri::webview::WebviewWindowBuilder;
+                use tauri::WebviewUrl;
+
+                let quit_i = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
+                let settings_i = MenuItem::with_id(app, "settings", "Settings", true, None::<&str>)?;
+                let menu = Menu::with_items(app, &[&quit_i, &settings_i])?;
+                let icon = app.default_window_icon().cloned();
+                let mut builder = TrayIconBuilder::new()
+                    .menu(&menu)
+                    .show_menu_on_left_click(false)
+                    .on_menu_event(|app, event| {
+                        let id = event.id().as_ref();
+                        match id {
+                            "quit" => app.exit(0),
+                            "settings" => open_settings_window(app),
+                            _ => {}
+                        }
+                    });
+                if let Some(icon) = icon {
+                    builder = builder.icon(icon);
+                }
+                let _tray = builder.build(app)?;
+            }
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
             commands::fix_grammar_command,
             commands::apply_fix_command,
+            commands::get_settings_command,
+            commands::save_settings_command,
             commands::debug_log
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[cfg(target_os = "windows")]
+fn open_settings_window(app: &AppHandle) {
+    if let Some(window) = app.get_webview_window("settings") {
+        let _ = window.show();
+        let _ = window.set_focus();
+        return;
+    }
+    let _ = tauri::WebviewWindowBuilder::new(
+        app,
+        "settings",
+        tauri::WebviewUrl::App("settings.html".into()),
+    )
+    .title("Settings")
+    .inner_size(500.0, 450.0)
+    .center()
+    .build()
+    .map(|w| {
+        let _ = w.show();
+        let _ = w.set_focus();
+    });
 }
 
 fn handle_shortcut(app: &AppHandle) {
