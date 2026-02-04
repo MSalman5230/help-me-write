@@ -10,30 +10,30 @@
 </head>
 
 <body>
-  <div class="container">
-    <div id="loading" class="hidden">Processing...</div>
+  <div class="app-popup">
+    <div id="loading" class="loading hidden">Processing…</div>
 
     <div id="content">
-      <div class="header">
+      <header class="header">
         <div class="drag-handle" data-tauri-drag-region></div>
-        <button id="close-btn" title="Close">X</button>
-      </div>
+        <button type="button" id="close-btn" class="close-btn" title="Close" aria-label="Close">×</button>
+      </header>
 
-      <div class="text-area-container">
-        <label>Original:</label>
-        <textarea id="original-text" readonly></textarea>
-      </div>
+      <section class="section">
+        <label class="section-label" for="original-text">Original</label>
+        <textarea id="original-text" class="text-area" readonly placeholder="Selected text will appear here"></textarea>
+      </section>
 
-      <div id="diff-area" class="text-area-container hidden">
-        <label>Corrected:</label>
-        <textarea id="corrected-text"></textarea>
+      <section id="diff-area" class="section hidden">
+        <label class="section-label" for="corrected-text">Corrected</label>
+        <textarea id="corrected-text" class="text-area" placeholder="Corrected text"></textarea>
         <div id="explanation" class="explanation"></div>
-      </div>
+      </section>
 
       <div class="actions">
-        <button id="fix-btn">Fix Grammar</button>
-        <button id="apply-btn" class="hidden">Apply Fix</button>
-        <button id="cancel-btn">Cancel</button>
+        <button type="button" id="fix-btn" class="btn btn-primary">Fix grammar</button>
+        <button type="button" id="apply-btn" class="btn btn-success hidden">Apply</button>
+        <button type="button" id="cancel-btn" class="btn btn-secondary">Cancel</button>
       </div>
     </div>
   </div>
