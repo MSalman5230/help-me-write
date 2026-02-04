@@ -140,16 +140,19 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   const themeBtn = document.getElementById("theme-btn");
-  function updateThemeButtonLabel() {
+  const themeIcon = document.getElementById("theme-icon");
+  const sunSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>';
+  const moonSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  function updateThemeButtonIcon() {
     const theme = document.documentElement.getAttribute("data-theme") || "dark";
-    themeBtn.textContent = theme === "dark" ? "Dark" : "Light";
+    themeIcon.innerHTML = theme === "dark" ? moonSvg : sunSvg;
   }
-  updateThemeButtonLabel();
+  updateThemeButtonIcon();
   themeBtn.addEventListener("click", () => {
     const current = document.documentElement.getAttribute("data-theme") || "dark";
     const next = current === "dark" ? "light" : "dark";
     localStorage.setItem("theme", next);
     document.documentElement.setAttribute("data-theme", next);
-    updateThemeButtonLabel();
+    updateThemeButtonIcon();
   });
 });

@@ -35,7 +35,7 @@ pub fn run() {
         .setup(|app| {
             #[cfg(desktop)]
             {
-                let shortcut_str = "Ctrl+Alt+Shift+G";
+                let shortcut_str = "Ctrl+Shift+Space";
                 if let Err(e) = app.global_shortcut().register(shortcut_str) {
                     eprintln!("Failed to register shortcut '{}': {}", shortcut_str, e);
                     #[cfg(target_os = "windows")]

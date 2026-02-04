@@ -128,9 +128,11 @@ body {
   border-radius: var(--radius-input);
   color: var(--text-muted);
   cursor: pointer;
-  font-size: 13px;
-  font-family: var(--font);
   transition: color 0.15s, background 0.15s;
+}
+.app .theme-btn svg {
+  display: block;
+  flex-shrink: 0;
 }
 
 .app .theme-btn:hover {
