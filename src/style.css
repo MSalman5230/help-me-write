@@ -246,7 +246,7 @@ body {
 .app .btn {
   flex: 0 0 auto;
   min-width: 88px;
-  padding: 10px 20px;
+  padding: 10px 10px;
   border: none;
   border-radius: 8px;
   font-family: var(--font);
@@ -326,7 +326,7 @@ body {
 }
 
 .page-settings .app {
-  padding: 5px;
+  padding: 5px 5px 5px 5px;
 }
 
 .app .settings-content {
@@ -338,7 +338,7 @@ body {
   background: var(--surface);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
-  padding: 24px;
+  padding: 12px 18px 2px 18px;
 }
 
 .settings-container {
@@ -376,7 +376,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 220px;
-  margin-bottom: max(var(--space-2), 24px);
+  margin-bottom: var(--space-1);
 }
 
 .settings-container .field-system-prompt label {
@@ -440,19 +440,18 @@ body {
   display: flex;
   justify-content: flex-end;
   gap: var(--space-2);
-  margin-top: max(var(--space-3), 24px);
+  margin-top: var(--space-2);
   flex-shrink: 0;
   margin-bottom: 0;
-  padding-top: 8px;
 }
 
 .settings-container .test-status {
   display: flex;
   align-items: center;
   gap: var(--space-1);
-  margin-top: var(--space-2);
+  margin-top: var(--space-1);
   font-size: 14px;
-  min-height: 24px;
+  min-height: 10px;
 }
 
 .settings-container .test-status .test-icon {
