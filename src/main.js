@@ -9,6 +9,31 @@ window.addEventListener("DOMContentLoaded", () => {
     invoke("debug_log", { message: msg }).catch((e) => console.error("Failed to log:", e));
   }
 
+  function escapeHtml(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  /** Uses jsdiff (Diff global from index.html script) to highlight added/changed words. */
+  function buildDiffHtml(original, corrected) {
+    if (typeof Diff === "undefined" || !Diff.diffWords) {
+      return escapeHtml(corrected);
+    }
+    const changes = Diff.diffWords(original, corrected); // jsdiff API
+    const parts = [];
+    for (const part of changes) {
+      if (part.removed) continue;
+      const escaped = escapeHtml(part.value);
+      if (part.added) {
+        parts.push('<span class="diff-add">' + escaped + "</span>");
+      } else {
+        parts.push(escaped);
+      }
+    }
+    return parts.join("");
+  }
+
   window.addEventListener("click", (e) => {
     log(`Click at: ${e.clientX}, ${e.clientY} Target: ${e.target.tagName}#${e.target.id || ""}`);
   });
@@ -18,21 +43,33 @@ window.addEventListener("DOMContentLoaded", () => {
   let correctedText = "";
 
   const originalTextArea = document.getElementById("original-text");
-  const correctedTextArea = document.getElementById("corrected-text");
+  const correctedPreview = document.getElementById("corrected-preview");
+  const correctedPlaceholder = document.getElementById("corrected-placeholder");
+  const copyBtn = document.getElementById("copy-btn");
   const explanationDiv = document.getElementById("explanation");
-  const diffArea = document.getElementById("diff-area");
   const fixBtn = document.getElementById("fix-btn");
   const loadingDiv = document.getElementById("loading");
+
+  function setCorrectedContent(plainText, originalForDiff) {
+    correctedText = plainText;
+    if (plainText) {
+      correctedPlaceholder.classList.add("hidden");
+      copyBtn.classList.remove("hidden");
+      const original = originalForDiff != null ? originalForDiff : originalTextArea.value.trim();
+      correctedPreview.innerHTML = original ? buildDiffHtml(original, plainText) : escapeHtml(plainText);
+    } else {
+      correctedPlaceholder.classList.remove("hidden");
+      copyBtn.classList.add("hidden");
+      correctedPreview.innerHTML = "";
+    }
+  }
 
   // Listen for text from backend
   listen("set-text", (event) => {
     const text = event.payload;
     originalText = text;
     originalTextArea.value = text;
-
-    diffArea.classList.add("hidden");
-    fixBtn.classList.remove("hidden");
-    correctedTextArea.value = "";
+    setCorrectedContent("");
     explanationDiv.innerText = "";
     updateFixButtonState();
   });
@@ -41,19 +78,15 @@ window.addEventListener("DOMContentLoaded", () => {
     fixBtn.disabled = !originalTextArea.value.trim();
   }
 
-  // Sync original text from user input (editable textarea)
   originalTextArea.addEventListener("input", () => {
     originalText = originalTextArea.value;
-    fixBtn.classList.remove("hidden");
     updateFixButtonState();
-    if (!correctedTextArea.value.trim()) {
-      diffArea.classList.add("hidden");
-      correctedTextArea.value = "";
+    if (!correctedText) {
+      setCorrectedContent("");
       explanationDiv.innerText = "";
     }
   });
 
-  // Initial state and when backend sets text
   updateFixButtonState();
 
   fixBtn.addEventListener("click", async () => {
@@ -68,15 +101,26 @@ window.addEventListener("DOMContentLoaded", () => {
     try {
       const result = await invoke("fix_grammar_command", { text: textToFix });
       correctedText = result.corrected;
-      correctedTextArea.value = correctedText;
+      setCorrectedContent(result.corrected, textToFix);
       explanationDiv.innerText = result.explanation || "";
-
-      diffArea.classList.remove("hidden");
     } catch (error) {
       log("Error fixing grammar: " + error);
       alert("Error fixing grammar: " + error);
     } finally {
       loadingDiv.classList.add("hidden");
+    }
+  });
+
+  copyBtn.addEventListener("click", async () => {
+    if (!correctedText) return;
+    try {
+      await navigator.clipboard.writeText(correctedText);
+      const label = copyBtn.textContent;
+      copyBtn.textContent = "Copied!";
+      setTimeout(() => { copyBtn.textContent = label; }, 1500);
+    } catch (e) {
+      log("Copy failed: " + e);
+      alert("Failed to copy to clipboard.");
     }
   });
 
@@ -93,5 +137,19 @@ window.addEventListener("DOMContentLoaded", () => {
       console.error("Failed to hide window:", e);
       alert("Failed to close: " + e);
     }
+  });
+
+  const themeBtn = document.getElementById("theme-btn");
+  function updateThemeButtonLabel() {
+    const theme = document.documentElement.getAttribute("data-theme") || "dark";
+    themeBtn.textContent = theme === "dark" ? "Dark" : "Light";
+  }
+  updateThemeButtonLabel();
+  themeBtn.addEventListener("click", () => {
+    const current = document.documentElement.getAttribute("data-theme") || "dark";
+    const next = current === "dark" ? "light" : "dark";
+    localStorage.setItem("theme", next);
+    document.documentElement.setAttribute("data-theme", next);
+    updateThemeButtonLabel();
   });
 });

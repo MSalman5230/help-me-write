@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Settings — AI Grammar Fixer</title>
   <link rel="stylesheet" href="style.css" />
+  <script>document.documentElement.setAttribute("data-theme", localStorage.getItem("theme") || "dark");</script>
 </head>
 
 <body class="page-settings">
@@ -31,6 +32,7 @@
         <textarea id="system-prompt" placeholder="Instructions for the AI grammar fixer…"></textarea>
       </div>
       <div class="actions">
+        <button type="button" id="theme-btn" class="theme-btn" title="Toggle theme" aria-label="Toggle light/dark mode">Dark</button>
         <button type="submit" class="btn-primary" id="save-btn">Save</button>
         <button type="button" class="btn-secondary" id="close-btn">Close</button>
       </div>

@@ -5,30 +5,40 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Grammar Fixer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <script>document.documentElement.setAttribute("data-theme", localStorage.getItem("theme") || "dark");</script>
+  <script src="https://unpkg.com/diff@5.2.0/dist/diff.min.js"></script>
   <script src="/main.js" defer></script>
 </head>
 
+
 <body>
-  <div class="app-popup">
+  <div class="app">
     <div id="loading" class="loading hidden">Processing…</div>
 
     <div id="content">
       <header class="header">
         <div class="drag-handle" data-tauri-drag-region></div>
+        <button type="button" id="theme-btn" class="theme-btn" title="Toggle theme" aria-label="Toggle light/dark mode">Dark</button>
         <button type="button" id="close-btn" class="close-btn" title="Close" aria-label="Close">×</button>
       </header>
 
-      <section class="section">
-        <label class="section-label" for="original-text">Original</label>
-        <textarea id="original-text" class="text-area" placeholder="Selected text will appear here"></textarea>
-      </section>
-
-      <section id="diff-area" class="section hidden">
-        <label class="section-label" for="corrected-text">Corrected</label>
-        <textarea id="corrected-text" class="text-area" placeholder="Corrected text"></textarea>
-        <div id="explanation" class="explanation"></div>
-      </section>
+      <div class="split-pane">
+        <div class="split-pane-col split-pane-input">
+          <textarea id="original-text" class="text-area" placeholder="Paste or type text to fix"></textarea>
+        </div>
+        <div class="split-pane-col split-pane-output">
+          <div class="corrected-header">
+            <span class="corrected-placeholder" id="corrected-placeholder">Corrected text will appear here</span>
+            <button type="button" id="copy-btn" class="btn btn-copy hidden" title="Copy to clipboard" aria-label="Copy to clipboard">Copy</button>
+          </div>
+          <div id="corrected-preview" class="corrected-preview"></div>
+          <div id="explanation" class="explanation"></div>
+        </div>
+      </div>
 
       <div class="actions">
         <button type="button" id="fix-btn" class="btn btn-primary">Fix grammar</button>

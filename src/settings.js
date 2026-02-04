@@ -59,5 +59,19 @@
     }
   });
 
+  const themeBtn = document.getElementById("theme-btn");
+  function updateThemeButtonLabel() {
+    const theme = document.documentElement.getAttribute("data-theme") || "dark";
+    themeBtn.textContent = theme === "dark" ? "Dark" : "Light";
+  }
+  updateThemeButtonLabel();
+  themeBtn.addEventListener("click", () => {
+    const current = document.documentElement.getAttribute("data-theme") || "dark";
+    const next = current === "dark" ? "light" : "dark";
+    localStorage.setItem("theme", next);
+    document.documentElement.setAttribute("data-theme", next);
+    updateThemeButtonLabel();
+  });
+
   loadSettings();
 })();
