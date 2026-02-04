@@ -21,8 +21,8 @@
 
     <div id="content">
       <header class="header">
-        <div class="drag-handle" data-tauri-drag-region></div>
         <button type="button" id="theme-btn" class="theme-btn" title="Toggle theme" aria-label="Toggle light/dark mode"><span id="theme-icon"></span></button>
+        <div class="drag-handle" data-tauri-drag-region></div>
         <button type="button" id="close-btn" class="close-btn" title="Close" aria-label="Close">×</button>
       </header>
 
@@ -32,7 +32,6 @@
         </div>
         <div class="split-pane-col split-pane-output">
           <div class="corrected-header">
-            <span class="corrected-placeholder" id="corrected-placeholder">Corrected text will appear here</span>
             <button type="button" id="copy-btn" class="btn btn-copy hidden" title="Copy to clipboard" aria-label="Copy to clipboard">Copy</button>
           </div>
           <div id="corrected-preview" class="corrected-preview"></div>
@@ -41,7 +40,7 @@
       </div>
 
       <div class="actions">
-        <button type="button" id="fix-btn" class="btn btn-primary">Fix grammar</button>
+        <button type="button" id="fix-btn" class="btn btn-primary">Fix Grammar</button>
         <button type="button" id="cancel-btn" class="btn btn-secondary">Cancel</button>
       </div>
     </div>

@@ -44,7 +44,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const originalTextArea = document.getElementById("original-text");
   const correctedPreview = document.getElementById("corrected-preview");
-  const correctedPlaceholder = document.getElementById("corrected-placeholder");
   const copyBtn = document.getElementById("copy-btn");
   const explanationDiv = document.getElementById("explanation");
   const fixBtn = document.getElementById("fix-btn");
@@ -53,12 +52,10 @@ window.addEventListener("DOMContentLoaded", () => {
   function setCorrectedContent(plainText, originalForDiff) {
     correctedText = plainText;
     if (plainText) {
-      correctedPlaceholder.classList.add("hidden");
       copyBtn.classList.remove("hidden");
       const original = originalForDiff != null ? originalForDiff : originalTextArea.value.trim();
       correctedPreview.innerHTML = original ? buildDiffHtml(original, plainText) : escapeHtml(plainText);
     } else {
-      correctedPlaceholder.classList.remove("hidden");
       copyBtn.classList.add("hidden");
       correctedPreview.innerHTML = "";
     }
