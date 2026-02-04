@@ -52,7 +52,7 @@ body {
   font-size: 15px;
   line-height: 1.6;
   color: var(--text);
-  background: var(--bg);
+  background: transparent;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -64,9 +64,11 @@ body {
   width: 100%;
   height: 100vh;
   min-width: 280px;
-  padding: 24px;
+  padding: 10px;
   gap: 16px;
   overflow: hidden;
+  background: var(--bg);
+  border-radius: 12px;
 }
 
 .app #content {
@@ -319,13 +321,28 @@ body {
 /* ----- Settings ----- */
 .page-settings {
   min-height: 100vh;
-  padding: clamp(var(--space-2), 4vmin, var(--space-4)) clamp(var(--space-1), 2vmin, var(--space-2));
+}
+
+.page-settings .app {
+  padding: 5px;
+}
+
+.app .settings-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: auto;
+  background: var(--surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 24px;
 }
 
 .settings-container {
-  max-width: 420px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 0 clamp(var(--space-1), 2vmin, var(--space-2));
+  width: 100%;
 }
 
 .settings-container .title {
@@ -350,11 +367,11 @@ body {
 .settings-container .field input,
 .settings-container .field textarea {
   width: 100%;
-  padding: var(--space-1) var(--space-2);
+  padding: var(--space-2);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-input);
   font-family: var(--font);
-  font-size: 14px;
+  font-size: 15px;
   color: var(--text);
   background: var(--surface);
   transition: border-color 0.15s;
@@ -363,7 +380,9 @@ body {
 .settings-container .field input:focus,
 .settings-container .field textarea:focus {
   outline: none;
-  border-color: var(--accent);
+  border-width: 2px;
+  border-color: var(--accent-focus);
+  padding: calc(var(--space-2) - 1px);
 }
 
 .settings-container .field input::placeholder,
@@ -376,6 +395,11 @@ body {
   resize: vertical;
 }
 
+.settings-container .field textarea#system-prompt {
+  min-height: 200px;
+  resize: both;
+}
+
 .settings-container .hint {
   font-size: 12px;
   color: var(--text-muted);
@@ -384,81 +408,24 @@ body {
 
 .settings-container .actions {
   display: flex;
-  gap: var(--space-1);
+  justify-content: flex-end;
+  gap: var(--space-2);
   margin-top: var(--space-3);
-  flex-wrap: wrap;
-}
-
-.settings-container .btn-primary {
-  flex: 1 1 0;
-  min-width: 88px;
-  max-width: 160px;
-  padding: var(--space-1) var(--space-2);
-  border: none;
-  border-radius: var(--radius);
-  font-family: var(--font);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  background: var(--accent);
-  color: #fff;
-  transition: background 0.15s;
-}
-
-.settings-container .btn-primary:hover:not(:disabled) {
-  background: var(--accent-hover);
-}
-
-.settings-container .btn-primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.settings-container .btn-secondary {
-  flex: 1 1 0;
-  min-width: 88px;
-  max-width: 160px;
-  padding: var(--space-1) var(--space-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  font-family: var(--font);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  background: var(--surface);
-  color: var(--text);
-  transition: background 0.15s;
-}
-
-.settings-container .btn-secondary:hover {
-  background: var(--border);
-}
-
-.settings-container .theme-btn {
-  min-width: 64px;
-  padding: var(--space-1) var(--space-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  font-family: var(--font);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  background: var(--surface);
-  color: var(--text);
-  transition: background 0.15s, color 0.15s;
-}
-
-.settings-container .theme-btn:hover {
-  background: var(--border);
+  flex-shrink: 0;
 }
 
 /* ----- Responsive: short and narrow viewports ----- */
 @media (max-height: 420px) {
   .app {
-    padding: var(--space-2);
+    padding: 10px;
   }
 
-  .app #content {
+  .page-settings .app {
+    padding: 5px;
+  }
+
+  .app #content,
+  .app .settings-content {
     padding: var(--space-2);
   }
 
@@ -492,15 +459,14 @@ body {
 @media (max-width: 320px) {
   .app {
     min-width: 260px;
-    padding: var(--space-1);
+    padding: 10px;
   }
 
-  .page-settings {
-    padding: var(--space-2) var(--space-1);
+  .page-settings .app {
+    padding: 5px;
   }
 
-  .settings-container {
-    padding-left: var(--space-1);
-    padding-right: var(--space-1);
+  .app .settings-content {
+    padding: var(--space-2);
   }
 }

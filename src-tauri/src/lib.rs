@@ -55,7 +55,7 @@ pub fn run() {
             #[cfg(target_os = "windows")]
             {
                 use tauri::menu::{Menu, MenuItem};
-                use tauri::tray::{TrayIconBuilder, TrayIconEvent};
+                use tauri::tray::{TrayIconBuilder, TrayIconEvent, MouseButton};
                 use tauri::webview::WebviewWindowBuilder;
                 use tauri::WebviewUrl;
 
@@ -69,9 +69,11 @@ pub fn run() {
                     .show_menu_on_left_click(false)
                     .on_tray_icon_event(|tray, event| {
                         match event {
-                            TrayIconEvent::Click { .. } | TrayIconEvent::DoubleClick { .. } => {
-                                let app = tray.app_handle();
-                                open_popup_window(app, get_text_for_popup(app));
+                            TrayIconEvent::Click { button, .. } | TrayIconEvent::DoubleClick { button, .. } => {
+                                if button == MouseButton::Left {
+                                    let app = tray.app_handle();
+                                    open_popup_window(app, get_text_for_popup(app));
+                                }
                             }
                             _ => {}
                         }
@@ -115,8 +117,10 @@ fn open_settings_window(app: &AppHandle) {
         tauri::WebviewUrl::App("settings.html".into()),
     )
     .title("Settings")
-    .inner_size(500.0, 450.0)
+    .inner_size(600.0, 800.0)
     .center()
+    .decorations(false)
+    .transparent(true)
     .build()
     .map(|w| {
         let _ = w.show();
