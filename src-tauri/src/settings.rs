@@ -18,8 +18,8 @@ fn default_model() -> String {
 
 fn default_system_prompt() -> String {
     r#"You are a grammar and style fixer. Given the user's text, reply with ONLY a single JSON object (no other text, no markdown). Use this exact shape:
-{"corrected": "<the corrected text>", "explanation": "<brief explanation of changes>"}
-The "explanation" field may be null or a short string. Output nothing but valid JSON."#.to_string()
+{"corrected": "<the corrected text>"}
+No explanation. Output nothing but this JSON."#.to_string()
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

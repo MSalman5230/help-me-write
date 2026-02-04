@@ -54,10 +54,26 @@ fn default_model_for_base(base: &str) -> &'static str {
 }
 
 const DEFAULT_SYSTEM_PROMPT: &str = r#"You are a grammar and style fixer. Given the user's text, reply with ONLY a single JSON object (no other text, no markdown). Use this exact shape:
-{"corrected": "<the corrected text>", "explanation": "<brief explanation of changes>"}
-The "explanation" field may be null or a short string. Output nothing but valid JSON."#;
+{"corrected": "<the corrected text>"}
+No explanation. Output nothing but this JSON."#;
+
+
+
+/// Strip optional markdown code fences (e.g. ```json ... ```) so we can parse the JSON.
+fn strip_markdown_code_fence(content: &str) -> &str {
+    let content = content.trim();
+    let content = content
+        .strip_prefix("```json")
+        .or_else(|| content.strip_prefix("```"))
+        .unwrap_or(content);
+    let content = content.strip_suffix("```").unwrap_or(content);
+    content.trim()
+}
 
 pub async fn fix_grammar_with_config(text: String, config: &AppSettings) -> Result<Correction, String> {
+    if text.is_empty() {
+        return Err("No text to fix after filtering.".to_string());
+    }
     let base = config.api_base.trim();
     let base = if base.is_empty() {
         std::env::var("OPENAI_API_BASE").unwrap_or_else(|_| "http://localhost:11434/v1".to_string())
@@ -100,6 +116,9 @@ pub async fn fix_grammar_with_config(text: String, config: &AppSettings) -> Resu
         ],
     };
 
+    let user_message = &req.messages[1].content;
+    println!("[API request] {}", user_message);
+
     let mut request_builder = client
         .post(&url)
         .json(&req);
@@ -131,9 +150,12 @@ pub async fn fix_grammar_with_config(text: String, config: &AppSettings) -> Resu
         .ok_or("API returned no choices or content")?;
 
     let content = content.trim();
-    let (corrected, explanation) = match serde_json::from_str::<GrammarResponse>(content) {
+    println!("[API response] {}", content);
+
+    let json_content = strip_markdown_code_fence(content);
+    let (corrected, explanation) = match serde_json::from_str::<GrammarResponse>(json_content) {
         Ok(gr) => (gr.corrected, gr.explanation),
-        Err(_) => (content.to_string(), Some("Could not parse explanation.".to_string())),
+        Err(_) => (json_content.to_string(), Some("Could not parse explanation.".to_string())),
     };
 
     Ok(Correction {

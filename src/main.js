@@ -36,18 +36,40 @@ window.addEventListener("DOMContentLoaded", () => {
     fixBtn.classList.remove("hidden");
     correctedTextArea.value = "";
     explanationDiv.innerText = "";
+    updateFixButtonState();
   });
+
+  function updateFixButtonState() {
+    fixBtn.disabled = !originalTextArea.value.trim();
+  }
+
+  // Sync original text from user input (editable textarea)
+  originalTextArea.addEventListener("input", () => {
+    originalText = originalTextArea.value;
+    if (!correctedTextArea.value.trim()) {
+      fixBtn.classList.remove("hidden");
+      applyBtn.classList.add("hidden");
+      diffArea.classList.add("hidden");
+      correctedTextArea.value = "";
+      explanationDiv.innerText = "";
+      updateFixButtonState();
+    }
+  });
+
+  // Initial state and when backend sets text
+  updateFixButtonState();
 
   fixBtn.addEventListener("click", async () => {
     log("Fix Button Clicked");
-    if (!originalText) {
-      log("No original text to fix");
+    const textToFix = originalTextArea.value.trim();
+    if (!textToFix) {
+      alert("Please enter or paste text to fix.");
       return;
     }
 
     loadingDiv.classList.remove("hidden");
     try {
-      const result = await invoke("fix_grammar_command", { text: originalText });
+      const result = await invoke("fix_grammar_command", { text: textToFix });
       correctedText = result.corrected;
       correctedTextArea.value = correctedText;
       explanationDiv.innerText = result.explanation || "";

@@ -55,20 +55,31 @@ pub fn run() {
             #[cfg(target_os = "windows")]
             {
                 use tauri::menu::{Menu, MenuItem};
-                use tauri::tray::TrayIconBuilder;
+                use tauri::tray::{TrayIconBuilder, TrayIconEvent};
                 use tauri::webview::WebviewWindowBuilder;
                 use tauri::WebviewUrl;
 
+                let open_i = MenuItem::with_id(app, "open", "Open", true, None::<&str>)?;
                 let quit_i = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
                 let settings_i = MenuItem::with_id(app, "settings", "Settings", true, None::<&str>)?;
-                let menu = Menu::with_items(app, &[&quit_i, &settings_i])?;
+                let menu = Menu::with_items(app, &[&open_i, &settings_i, &quit_i])?;
                 let icon = app.default_window_icon().cloned();
                 let mut builder = TrayIconBuilder::new()
                     .menu(&menu)
                     .show_menu_on_left_click(false)
+                    .on_tray_icon_event(|tray, event| {
+                        match event {
+                            TrayIconEvent::Click { .. } | TrayIconEvent::DoubleClick { .. } => {
+                                let app = tray.app_handle();
+                                open_popup_window(app, get_text_for_popup(app));
+                            }
+                            _ => {}
+                        }
+                    })
                     .on_menu_event(|app, event| {
                         let id = event.id().as_ref();
                         match id {
+                            "open" => open_popup_window(app, get_text_for_popup(app)),
                             "quit" => app.exit(0),
                             "settings" => open_settings_window(app),
                             _ => {}
@@ -114,21 +125,34 @@ fn open_settings_window(app: &AppHandle) {
     });
 }
 
-fn handle_shortcut(app: &AppHandle) {
-    let service = PlatformAccessibility::new(app);
-    match service.get_selected_text() {
-        Ok(text) => {
-            eprintln!("Selected text: {}", text);
-            if let Some(window) = app.get_webview_window("main") {
-                // TODO: Get cursor position and set window position
-                
-                window.emit("set-text", text).unwrap();
-                window.show().unwrap();
-                window.set_focus().unwrap();
-            }
-        }
-        Err(e) => {
+/// Opens the main popup window and sets its text. Used by hotkey, tray "Open", and tray left/double-click.
+fn open_popup_window(app: &AppHandle, text: String) {
+    if let Some(window) = app.get_webview_window("main") {
+        let _ = window.emit("set-text", text);
+        let _ = window.show();
+        let _ = window.set_focus();
+    }
+}
+
+#[cfg(target_os = "windows")]
+fn get_text_for_popup(app: &AppHandle) -> String {
+    PlatformAccessibility::new(app)
+        .get_selected_text()
+        .unwrap_or_else(|e| {
             eprintln!("Failed to get selected text: {}", e);
-        }
+            String::new()
+        })
+}
+
+fn handle_shortcut(app: &AppHandle) {
+    #[cfg(target_os = "windows")]
+    {
+        let text = get_text_for_popup(app);
+        eprintln!("Selected text: {}", text);
+        open_popup_window(app, text);
+    }
+    #[cfg(not(target_os = "windows"))]
+    {
+        open_popup_window(app, String::new());
     }
 }
