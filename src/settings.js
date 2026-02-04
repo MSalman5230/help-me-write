@@ -9,17 +9,31 @@
   const invoke = core.invoke.bind(core);
   const getCurrentWindow = tauriWindow?.getCurrentWindow || (() => ({ hide: async () => {} }));
 
+  function updateBaseUrlVisibility() {
+    const provider = document.getElementById("ai-provider").value;
+    const field = document.getElementById("api-base-field");
+    if (provider === "openai" || provider === "gemini") {
+      field.style.display = "none";
+    } else {
+      field.style.display = "";
+    }
+  }
+
   async function loadSettings() {
     try {
       const s = await invoke("get_settings_command");
+      document.getElementById("ai-provider").value = s.ai_provider || "ollama";
       document.getElementById("api-base").value = s.api_base || "";
       document.getElementById("api-key").value = s.api_key || "";
       document.getElementById("model").value = s.model || "";
       document.getElementById("system-prompt").value = s.system_prompt || "";
+      updateBaseUrlVisibility();
     } catch (e) {
       console.error("Failed to load settings:", e);
     }
   }
+
+  document.getElementById("ai-provider").addEventListener("change", updateBaseUrlVisibility);
 
   document.getElementById("settings-form").addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -28,6 +42,7 @@
     try {
       await invoke("save_settings_command", {
         settings: {
+          ai_provider: document.getElementById("ai-provider").value,
           api_base: document.getElementById("api-base").value.trim(),
           api_key: document.getElementById("api-key").value,
           model: document.getElementById("model").value.trim(),
@@ -74,6 +89,34 @@
     localStorage.setItem("theme", next);
     document.documentElement.setAttribute("data-theme", next);
     updateThemeButtonIcon();
+  });
+
+  const testStatus = document.getElementById("test-status");
+  const checkSvg = '<svg class="test-icon test-icon-ok" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>';
+  const crossSvg = '<svg class="test-icon test-icon-fail" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+  document.getElementById("test-btn").addEventListener("click", async () => {
+    const testBtn = document.getElementById("test-btn");
+    testBtn.disabled = true;
+    testStatus.innerHTML = "";
+    testStatus.className = "test-status";
+    try {
+      await invoke("test_ai_connection_command", {
+        settings: {
+          ai_provider: document.getElementById("ai-provider").value,
+          api_base: document.getElementById("api-base").value.trim(),
+          api_key: document.getElementById("api-key").value,
+          model: document.getElementById("model").value.trim(),
+          system_prompt: document.getElementById("system-prompt").value.trim(),
+        },
+      });
+      testStatus.innerHTML = checkSvg + " <span>Connection OK</span>";
+      testStatus.classList.add("test-status-ok");
+    } catch (err) {
+      testStatus.innerHTML = crossSvg + " <span>" + String(err).replace(/</g, "&lt;") + "</span>";
+      testStatus.classList.add("test-status-fail");
+    } finally {
+      testBtn.disabled = false;
+    }
   });
 
   loadSettings();

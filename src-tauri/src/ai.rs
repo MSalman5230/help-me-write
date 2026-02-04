@@ -43,6 +43,32 @@ struct GrammarResponse {
     explanation: Option<String>,
 }
 
+/// Returns the effective API base URL from provider and stored api_base.
+/// OpenAI and Gemini use fixed URLs; Ollama and Custom use the user's api_base.
+fn effective_api_base(config: &AppSettings) -> String {
+    let provider = config.ai_provider.trim().to_lowercase();
+    match provider.as_str() {
+        "openai" => "https://api.openai.com/v1".to_string(),
+        "gemini" => "https://generativelanguage.googleapis.com/v1beta".to_string(),
+        "ollama" | "custom" => {
+            let base = config.api_base.trim();
+            if base.is_empty() {
+                std::env::var("OPENAI_API_BASE").unwrap_or_else(|_| "http://localhost:11434/v1".to_string())
+            } else {
+                base.to_string()
+            }
+        }
+        _ => {
+            let base = config.api_base.trim();
+            if base.is_empty() {
+                "http://localhost:11434/v1".to_string()
+            } else {
+                base.to_string()
+            }
+        }
+    }
+}
+
 fn default_model_for_base(base: &str) -> &'static str {
     if base.contains("api.openai.com") {
         "gpt-5-nano"
@@ -74,19 +100,14 @@ pub async fn fix_grammar_with_config(text: String, config: &AppSettings) -> Resu
     if text.is_empty() {
         return Err("No text to fix after filtering.".to_string());
     }
-    let base = config.api_base.trim();
-    let base = if base.is_empty() {
-        std::env::var("OPENAI_API_BASE").unwrap_or_else(|_| "http://localhost:11434/v1".to_string())
-    } else {
-        base.to_string()
-    };
+    let base = effective_api_base(config);
     let key = if config.api_key.is_empty() {
         std::env::var("OPENAI_API_KEY").unwrap_or_else(|_| "ollama".to_string())
     } else {
         config.api_key.clone()
     };
     let model = if config.model.is_empty() {
-        std::env::var("OPENAI_MODEL").unwrap_or_else(|_| default_model_for_base(&base).to_string())
+        std::env::var("OPENAI_MODEL").unwrap_or_else(|_| default_model_for_base(base.trim()).to_string())
     } else {
         config.model.clone()
     };
@@ -163,4 +184,67 @@ pub async fn fix_grammar_with_config(text: String, config: &AppSettings) -> Resu
         corrected,
         explanation,
     })
+}
+
+/// Test the AI connection using current config (API key, model, effective base).
+/// Sends a minimal chat request and returns Ok(()) if the API responds successfully.
+pub async fn test_connection(config: &AppSettings) -> Result<(), String> {
+    let base = effective_api_base(config);
+    let key = if config.api_key.is_empty() {
+        std::env::var("OPENAI_API_KEY").unwrap_or_else(|_| "ollama".to_string())
+    } else {
+        config.api_key.clone()
+    };
+    let model = if config.model.is_empty() {
+        std::env::var("OPENAI_MODEL").unwrap_or_else(|_| default_model_for_base(base.trim()).to_string())
+    } else {
+        config.model.clone()
+    };
+
+    let url = format!("{}/chat/completions", base.trim_end_matches('/'));
+    let client = reqwest::Client::builder()
+        .timeout(std::time::Duration::from_secs(15))
+        .build()
+        .map_err(|e| e.to_string())?;
+
+    let req = ChatRequest {
+        model,
+        messages: vec![
+            ChatMessage {
+                role: "system".to_string(),
+                content: "Reply with only the word OK.".to_string(),
+            },
+            ChatMessage {
+                role: "user".to_string(),
+                content: "test".to_string(),
+            },
+        ],
+    };
+
+    let mut request_builder = client.post(&url).json(&req);
+    if !key.is_empty() {
+        request_builder = request_builder.header("Authorization", format!("Bearer {}", key));
+    }
+
+    let response = request_builder
+        .send()
+        .await
+        .map_err(|e| e.to_string())?;
+
+    if !response.status().is_success() {
+        let status = response.status();
+        let body = response.text().await.unwrap_or_default();
+        return Err(format!("API error {}: {}", status, body));
+    }
+
+    let chat: ChatResponse = response
+        .json()
+        .await
+        .map_err(|e| e.to_string())?;
+
+    if chat.choices.is_empty() {
+        return Err("API returned no choices".to_string());
+    }
+
+    Ok(())
 }

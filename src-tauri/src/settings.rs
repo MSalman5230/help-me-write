@@ -4,6 +4,10 @@ use std::path::PathBuf;
 
 const SETTINGS_FILENAME: &str = "settings.json";
 
+fn default_ai_provider() -> String {
+    "ollama".to_string()
+}
+
 fn default_api_base() -> String {
     "http://localhost:11434/v1".to_string()
 }
@@ -24,6 +28,8 @@ No explanation. Output nothing but this JSON."#.to_string()
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct AppSettings {
+    #[serde(default = "default_ai_provider")]
+    pub ai_provider: String,
     #[serde(default = "default_api_base")]
     pub api_base: String,
     #[serde(default = "default_api_key")]
@@ -37,6 +43,7 @@ pub struct AppSettings {
 impl Default for AppSettings {
     fn default() -> Self {
         Self {
+            ai_provider: default_ai_provider(),
             api_base: default_api_base(),
             api_key: default_api_key(),
             model: default_model(),

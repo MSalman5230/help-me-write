@@ -21,6 +21,11 @@ pub fn save_settings_command(app: tauri::AppHandle, settings: settings::AppSetti
 }
 
 #[tauri::command]
+pub async fn test_ai_connection_command(settings: settings::AppSettings) -> Result<(), String> {
+    ai::test_connection(&settings).await
+}
+
+#[tauri::command]
 pub fn debug_log(message: String) {
     println!("[Frontend Debug] {}", message);
 }

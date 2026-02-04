@@ -102,6 +102,7 @@ pub fn run() {
             commands::fix_grammar_command,
             commands::get_settings_command,
             commands::save_settings_command,
+            commands::test_ai_connection_command,
             commands::debug_log
         ])
         .run(tauri::generate_context!())

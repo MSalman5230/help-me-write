@@ -20,6 +20,7 @@
   --accent-focus: #60a5fa;
   --success: #22c55e;
   --success-hover: #16a34a;
+  --error: #ef4444;
   --diff-add-bg: #14532d;
   --shadow-card: 0 10px 25px rgba(0, 0, 0, 0.3);
   --overlay-bg: rgba(17, 17, 19, 0.9);
@@ -36,6 +37,7 @@
   --accent-focus: #3B82F6;
   --success: #16a34a;
   --success-hover: #15803d;
+  --error: #dc2626;
   --diff-add-bg: #DCFCE7;
   --shadow-card: 0 10px 25px rgba(0, 0, 0, 0.05);
   --overlay-bg: rgba(249, 250, 251, 0.9);
@@ -390,6 +392,7 @@ body {
 }
 
 .settings-container .field input,
+.settings-container .field select,
 .settings-container .field textarea {
   width: 100%;
   padding: var(--space-2);
@@ -403,6 +406,7 @@ body {
 }
 
 .settings-container .field input:focus,
+.settings-container .field select:focus,
 .settings-container .field textarea:focus {
   outline: none;
   border-width: 2px;
@@ -439,6 +443,35 @@ body {
   margin-top: var(--space-3);
   flex-shrink: 0;
   margin-bottom: 0;
+}
+
+.settings-container .test-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+  font-size: 14px;
+  min-height: 24px;
+}
+
+.settings-container .test-status .test-icon {
+  flex-shrink: 0;
+}
+
+.settings-container .test-status-ok {
+  color: var(--success);
+}
+
+.settings-container .test-status-ok .test-icon-ok {
+  color: var(--success);
+}
+
+.settings-container .test-status-fail {
+  color: var(--error);
+}
+
+.settings-container .test-status-fail .test-icon-fail {
+  color: var(--error);
 }
 
 /* ----- Responsive: short and narrow viewports ----- */

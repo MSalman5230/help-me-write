@@ -24,9 +24,18 @@
         <h1 class="title">Settings</h1>
         <form id="settings-form">
           <div class="field">
+            <label for="ai-provider">AI provider</label>
+            <select id="ai-provider">
+              <option value="openai">OpenAI</option>
+              <option value="gemini">Gemini</option>
+              <option value="ollama">Ollama</option>
+              <option value="custom">Custom</option>
+            </select>
+          </div>
+          <div class="field" id="api-base-field">
             <label for="api-base">API base URL</label>
             <input type="text" id="api-base" placeholder="e.g. http://localhost:11434/v1" autocomplete="off" />
-            <div class="hint">OpenAI-compatible endpoint (e.g. Ollama, OpenAI).</div>
+            <div class="hint">OpenAI-compatible endpoint (e.g. Ollama). Shown for Ollama and Custom only.</div>
           </div>
           <div class="field">
             <label for="api-key">API key</label>
@@ -43,7 +52,9 @@
           </div>
           <div class="actions">
             <button type="submit" class="btn btn-primary" id="save-btn">Save</button>
+            <button type="button" class="btn btn-secondary" id="test-btn">Test</button>
           </div>
+          <div id="test-status" class="test-status" aria-live="polite"></div>
         </form>
       </div>
     </div>
