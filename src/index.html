@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Grammar Fixer</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="/main.js" defer></script>
+</head>
+
+<body>
+  <div class="container">
+    <div id="loading" class="hidden">Processing...</div>
+
+    <div id="content">
+      <div class="header">
+        <div class="drag-handle" data-tauri-drag-region></div>
+        <button id="close-btn" title="Close">X</button>
+      </div>
+
+      <div class="text-area-container">
+        <label>Original:</label>
+        <textarea id="original-text" readonly></textarea>
+      </div>
+
+      <div id="diff-area" class="text-area-container hidden">
+        <label>Corrected:</label>
+        <textarea id="corrected-text"></textarea>
+        <div id="explanation" class="explanation"></div>
+      </div>
+
+      <div class="actions">
+        <button id="fix-btn">Fix Grammar</button>
+        <button id="apply-btn" class="hidden">Apply Fix</button>
+        <button id="cancel-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
