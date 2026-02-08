@@ -55,6 +55,14 @@
             <label for="system-prompt">System prompt</label>
             <textarea id="system-prompt" placeholder="Instructions for the AI grammar fixer…"></textarea>
           </div>
+          <div class="field field-hotkey">
+            <label for="hotkey-input">Trigger shortcut</label>
+            <div class="hotkey-row">
+              <input type="text" id="hotkey-input" readonly placeholder="e.g. Ctrl+Shift+Space" autocomplete="off" />
+              <button type="button" class="btn btn-secondary" id="record-hotkey-btn">Record</button>
+            </div>
+            <div class="hint">If the shortcut doesn't work after saving, it may be in use by another app; try another combination.</div>
+          </div>
           <div class="actions">
             <button type="submit" class="btn btn-primary" id="save-btn">Save</button>
             <button type="button" class="btn btn-secondary" id="test-btn">Test</button>

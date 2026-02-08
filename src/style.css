@@ -430,6 +430,21 @@ body .settings-content .header.top-bar {
   margin-bottom: var(--space-1);
 }
 
+.settings-container .field-hotkey .hotkey-row {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.settings-container .field-hotkey .hotkey-row input {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.settings-container .field-hotkey .hotkey-row .btn {
+  flex-shrink: 0;
+}
+
 .settings-container .field-system-prompt label {
   flex-shrink: 0;
 }

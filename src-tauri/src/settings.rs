@@ -26,6 +26,10 @@ fn default_system_prompt() -> String {
 No explanation. Output nothing but this JSON."#.to_string()
 }
 
+fn default_hotkey() -> String {
+    "Ctrl+Shift+Space".to_string()
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct AppSettings {
     #[serde(default = "default_ai_provider")]
@@ -38,6 +42,8 @@ pub struct AppSettings {
     pub model: String,
     #[serde(default = "default_system_prompt")]
     pub system_prompt: String,
+    #[serde(default = "default_hotkey")]
+    pub hotkey: String,
 }
 
 impl Default for AppSettings {
@@ -48,6 +54,7 @@ impl Default for AppSettings {
             api_key: default_api_key(),
             model: default_model(),
             system_prompt: default_system_prompt(),
+            hotkey: default_hotkey(),
         }
     }
 }

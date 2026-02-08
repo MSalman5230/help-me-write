@@ -27,6 +27,7 @@
       document.getElementById("api-key").value = s.api_key || "";
       document.getElementById("model").value = s.model || "";
       document.getElementById("system-prompt").value = s.system_prompt || "";
+      document.getElementById("hotkey-input").value = s.hotkey || "Ctrl+Shift+Space";
       updateBaseUrlVisibility();
     } catch (e) {
       console.error("Failed to load settings:", e);
@@ -34,6 +35,43 @@
   }
 
   document.getElementById("ai-provider").addEventListener("change", updateBaseUrlVisibility);
+
+  function eventToShortcutString(evt) {
+    const parts = [];
+    if (evt.ctrlKey) parts.push("Ctrl");
+    if (evt.altKey) parts.push("Alt");
+    if (evt.shiftKey) parts.push("Shift");
+    if (evt.metaKey) parts.push("Meta");
+    const code = evt.code;
+    if (!code || ["ControlLeft", "ControlRight", "AltLeft", "AltRight", "ShiftLeft", "ShiftRight", "MetaLeft", "MetaRight"].includes(code)) return null;
+    parts.push(code);
+    return parts.join("+");
+  }
+
+  document.getElementById("record-hotkey-btn").addEventListener("click", () => {
+    const input = document.getElementById("hotkey-input");
+    const btn = document.getElementById("record-hotkey-btn");
+    input.placeholder = "Press the key combination…";
+    btn.textContent = "Listening…";
+    function onKeydown(evt) {
+      evt.preventDefault();
+      evt.stopPropagation();
+      if (evt.code === "Escape") {
+        input.placeholder = "e.g. Ctrl+Shift+Space";
+        btn.textContent = "Record";
+        document.removeEventListener("keydown", onKeydown);
+        return;
+      }
+      const str = eventToShortcutString(evt);
+      if (str) {
+        input.value = str;
+        input.placeholder = "e.g. Ctrl+Shift+Space";
+        btn.textContent = "Record";
+        document.removeEventListener("keydown", onKeydown);
+      }
+    }
+    document.addEventListener("keydown", onKeydown, true);
+  });
 
   document.getElementById("settings-form").addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -47,6 +85,7 @@
           api_key: document.getElementById("api-key").value,
           model: document.getElementById("model").value.trim(),
           system_prompt: document.getElementById("system-prompt").value.trim(),
+          hotkey: document.getElementById("hotkey-input").value.trim() || "Ctrl+Shift+Space",
         },
       });
       const w = getCurrentWindow();
@@ -58,6 +97,7 @@
     } catch (err) {
       console.error("Failed to save settings:", err);
       alert("Failed to save: " + String(err));
+      // Keep settings window open so user can change the shortcut
     } finally {
       saveBtn.disabled = false;
     }

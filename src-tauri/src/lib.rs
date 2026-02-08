@@ -38,7 +38,9 @@ pub fn run() {
             }
             #[cfg(desktop)]
             {
-                let shortcut_str = "Ctrl+Shift+Space";
+                let settings = settings::load_settings(app.handle()).unwrap_or_default();
+                let shortcut_str = settings.hotkey.trim();
+                let shortcut_str: &str = if shortcut_str.is_empty() { "Ctrl+Shift+Space" } else { shortcut_str };
                 if let Err(e) = app.global_shortcut().register(shortcut_str) {
                     eprintln!("Failed to register shortcut '{}': {}", shortcut_str, e);
                     #[cfg(target_os = "windows")]
