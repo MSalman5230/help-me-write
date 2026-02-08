@@ -12,9 +12,8 @@
   <script>document.documentElement.setAttribute("data-theme", localStorage.getItem("theme") || "dark");</script>
 </head>
 
-<body class="page-settings">
-  <div class="app" data-tauri-drag-region>
-    <div class="settings-content">
+<body class="page-settings" data-tauri-drag-region>
+  <div class="settings-content">
       <header class="header top-bar">
         <div class="top-bar-left">
           <button type="button" id="theme-btn" class="theme-btn" title="Toggle theme" aria-label="Toggle light/dark mode"><span id="theme-icon"></span></button>
@@ -63,7 +62,6 @@
           <div id="test-status" class="test-status" aria-live="polite"></div>
         </form>
       </div>
-    </div>
   </div>
   <script src="settings.js"></script>
 </body>
