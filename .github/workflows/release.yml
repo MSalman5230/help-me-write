@@ -18,8 +18,8 @@ jobs:
         include:
           - platform: windows-latest
             args: ''
-          - platform: ubuntu-22.04
-            args: ''
+          #- platform: ubuntu-22.04
+          #  args: ''
           # Uncomment for macOS builds (uses more Actions minutes):
           # - platform: macos-latest
           #   args: '--target x86_64-apple-darwin'
