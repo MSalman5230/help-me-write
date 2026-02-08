@@ -4,10 +4,12 @@
  * Output: src-tauri/target/release/bundle/<ProductName>_<version>_x64-portable.zip
  */
 
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
+import fs from 'fs';
+import path from 'path';
+import { execSync } from 'child_process';
+import { fileURLToPath } from 'url';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
 const srcTauri = path.join(rootDir, 'src-tauri');
 const releaseDir = path.join(srcTauri, 'target', 'release');
