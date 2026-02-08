@@ -50,5 +50,4 @@ The output binary will be located in `src-tauri/target/release/`.
 *   **Global Hotkey**: Triggers from any application.
 *   **Context Aware**: Reads selected text from the active window.
 *   **AI Correction**: Suggests grammar fixes (Mock Engine currently).
-*   **One-Click Apply**: Automatically replaces original text with the fix.
-*   **Cross-Platform**: Designed for Windows and macOS.
+*   **Cross-Platform**: Designed for Windows and macOS. [Todo]
