@@ -9,7 +9,7 @@ A (Windows) background application that fixes grammar in any text input field us
 *   [Node.js](https://nodejs.org/) (current LTS)
 *   [Rust](https://www.rust-lang.org/tools/install)
 *   **Windows**: Build Tools for Visual Studio 2022.
-*   **macOS**: Xcode Command Line Tools (`xcode-select --install`).
+*   **macOS**: TODO.
 
 ### Installation
 
@@ -33,7 +33,7 @@ npm run tauri dev
 ```
 
 *   The app runs in the background.
-*   Press **`Ctrl + Shift + Space`** (Windows) or configured shortcut to trigger the UI[Todo].
+*   Press **`Ctrl + Shift + Space`** (Windows) or configured shortcut to trigger the UI.
 
 ### Building for Production
 
@@ -49,5 +49,4 @@ The output binary will be located in `src-tauri/target/release/`.
 
 *   **Global Hotkey**: Triggers from any application.
 *   **Context Aware**: Reads selected text from the active window.
-*   **AI Correction**: Suggests grammar fixes (Mock Engine currently).
-*   **Cross-Platform**: Designed for Windows and macOS. [Todo]
+*   **AI Correction**: Suggests Structure, grammar and Spelling fixes.
