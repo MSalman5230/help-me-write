@@ -58,6 +58,7 @@ jobs:
         run: npm ci
 
       - name: Build and release (Tauri)
+        id: tauri-release
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -68,3 +69,16 @@ jobs:
           releaseDraft: true              # Set to false to publish immediately
           prerelease: false
           args: ${{ matrix.args }}
+
+      - name: Create portable zip (Windows)
+        if: matrix.platform == 'windows-latest' && steps.tauri-release.outputs.releaseId != ''
+        run: node scripts/create-portable.js
+
+      - name: Upload portable zip to release
+        if: matrix.platform == 'windows-latest' && steps.tauri-release.outputs.releaseId != ''
+        uses: softprops/action-gh-release@v2
+        with:
+          releaseId: ${{ steps.tauri-release.outputs.releaseId }}
+          files: src-tauri/target/release/bundle/*-portable.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
