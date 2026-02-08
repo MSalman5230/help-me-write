@@ -45,6 +45,19 @@ npm run tauri build
 
 The output binary will be located in `src-tauri/target/release/`.
 
+### Releasing to GitHub
+
+To publish installers (e.g. Windows `.exe` / installer) to **GitHub Releases**:
+
+1. **One-time setup**: In your repo on GitHub go to **Settings → Actions → General**, under "Workflow permissions" choose **Read and write permissions**, then Save.
+2. **Trigger a release** (pick one):
+   - **Manual**: Go to **Actions → Release** → click **Run workflow** → Run workflow. The run will use the version from `src-tauri/tauri.conf.json` (e.g. `0.1.0` → tag `v0.1.0`).
+   - **From branch**: Push or merge to the `release` branch.
+   - **From tag**: Create and push a version tag, e.g. `git tag v0.1.0 && git push origin v0.1.0`.
+3. When the workflow finishes, open **Releases** on GitHub. A **draft** release will be created with the built installers attached. Edit the release and click **Publish** when ready.
+
+The workflow builds for **Windows** and **Linux** by default. To add macOS, uncomment the `macos-latest` entries in `.github/workflows/release.yml`.
+
 ## 🛠 Features
 
 *   **Global Hotkey**: Triggers from any application.
