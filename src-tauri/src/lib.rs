@@ -4,7 +4,7 @@ mod commands;
 mod settings;
 
 use tauri::{AppHandle, Manager, Emitter};
-use tauri_plugin_global_shortcut::{Code, Modifiers, ShortcutState, Shortcut};
+use tauri_plugin_global_shortcut::ShortcutState;
 use accessibility::{AccessibilityService, PlatformAccessibility};
 
 use tauri_plugin_global_shortcut::GlobalShortcutExt;
@@ -61,15 +61,15 @@ pub fn run() {
             {
                 use tauri::menu::{Menu, MenuItem};
                 use tauri::tray::{TrayIconBuilder, TrayIconEvent, MouseButton};
-                use tauri::webview::WebviewWindowBuilder;
-                use tauri::WebviewUrl;
+                
+                
 
                 let open_i = MenuItem::with_id(app, "open", "Open", true, None::<&str>)?;
                 let quit_i = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
                 let settings_i = MenuItem::with_id(app, "settings", "Settings", true, None::<&str>)?;
                 let menu = Menu::with_items(app, &[&open_i, &settings_i, &quit_i])?;
                 // Use 128x128 so the tray icon is sharp (Windows scales down from this)
-                let mut builder = TrayIconBuilder::new()
+                let builder = TrayIconBuilder::new()
                     .icon(tauri::include_image!("icons/128x128.png"))
                     .menu(&menu)
                     .show_menu_on_left_click(false)

@@ -1,7 +1,8 @@
-use tauri::AppHandle;
 
 pub trait AccessibilityService {
     fn get_selected_text(&self) -> Result<String, String>;
+    /// Replaces the current selection with the given text. Reserved for future "apply suggestion" flow.
+    #[allow(dead_code)]
     fn replace_selected_text(&self, text: &str) -> Result<(), String>;
 }
 

@@ -1,10 +1,10 @@
 use super::AccessibilityService;
-use tauri::{AppHandle, Manager};
+use tauri::AppHandle;
 use tauri_plugin_clipboard_manager::ClipboardExt;
 use std::thread;
 use std::time::Duration;
 use windows::Win32::UI::Input::KeyboardAndMouse::{
-    SendInput, INPUT, INPUT_0, KEYBDINPUT, KEYEVENTF_KEYUP, VK_CONTROL, VK_C, VK_V, VIRTUAL_KEY, INPUT_KEYBOARD,
+    SendInput, INPUT, KEYBDINPUT, KEYEVENTF_KEYUP, VK_CONTROL, VK_C, VK_V, VIRTUAL_KEY, INPUT_KEYBOARD,
     VK_SHIFT, VK_MENU
 };
 use std::mem::size_of;
