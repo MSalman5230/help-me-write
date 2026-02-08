@@ -44,7 +44,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const originalTextArea = document.getElementById("original-text");
   const correctedPreview = document.getElementById("corrected-preview");
-  const copyBtn = document.getElementById("copy-btn");
+  const copyInlineBtn = document.getElementById("copy-inline-btn");
   const explanationDiv = document.getElementById("explanation");
   const fixBtn = document.getElementById("fix-btn");
   const loadingDiv = document.getElementById("loading");
@@ -52,11 +52,11 @@ window.addEventListener("DOMContentLoaded", () => {
   function setCorrectedContent(plainText, originalForDiff) {
     correctedText = plainText;
     if (plainText) {
-      copyBtn.classList.remove("hidden");
+      copyInlineBtn.classList.remove("hidden");
       const original = originalForDiff != null ? originalForDiff : originalTextArea.value.trim();
       correctedPreview.innerHTML = original ? buildDiffHtml(original, plainText) : escapeHtml(plainText);
     } else {
-      copyBtn.classList.add("hidden");
+      copyInlineBtn.classList.add("hidden");
       correctedPreview.innerHTML = "";
     }
   }
@@ -108,13 +108,13 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  copyBtn.addEventListener("click", async () => {
+  copyInlineBtn.addEventListener("click", async () => {
     if (!correctedText) return;
     try {
       await navigator.clipboard.writeText(correctedText);
-      const label = copyBtn.textContent;
-      copyBtn.textContent = "Copied!";
-      setTimeout(() => { copyBtn.textContent = label; }, 1500);
+      const label = copyInlineBtn.textContent;
+      copyInlineBtn.textContent = "Copied!";
+      setTimeout(() => { copyInlineBtn.textContent = label; }, 1500);
     } catch (e) {
       log("Copy failed: " + e);
       alert("Failed to copy to clipboard.");
@@ -127,7 +127,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
   const closeBtn = document.getElementById("close-btn");
   closeBtn.addEventListener("click", async () => {
-    console.log("Close button clicked");
     try {
       await getCurrentWindow().hide();
     } catch (e) {
@@ -135,6 +134,29 @@ window.addEventListener("DOMContentLoaded", () => {
       alert("Failed to close: " + e);
     }
   });
+
+  document.getElementById("min-btn").addEventListener("click", async () => {
+    try {
+      await getCurrentWindow().minimize();
+    } catch (e) {
+      console.error("Failed to minimize:", e);
+    }
+  });
+
+  document.getElementById("max-btn").addEventListener("click", async () => {
+    try {
+      await getCurrentWindow().toggleMaximize();
+    } catch (e) {
+      console.error("Failed to toggle maximize:", e);
+    }
+  });
+
+  const minIconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+  const maxIconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>';
+  const closeIconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+  document.getElementById("min-icon").innerHTML = minIconSvg;
+  document.getElementById("max-icon").innerHTML = maxIconSvg;
+  document.getElementById("close-icon").innerHTML = closeIconSvg;
 
   const themeBtn = document.getElementById("theme-btn");
   const themeIcon = document.getElementById("theme-icon");

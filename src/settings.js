@@ -63,6 +63,31 @@
     }
   });
 
+  const minIconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+  const maxIconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>';
+  const closeIconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+  document.getElementById("min-icon").innerHTML = minIconSvg;
+  document.getElementById("max-icon").innerHTML = maxIconSvg;
+  document.getElementById("close-icon").innerHTML = closeIconSvg;
+
+  document.getElementById("min-btn").addEventListener("click", async () => {
+    try {
+      const w = getCurrentWindow();
+      if (w && typeof w.minimize === "function") await w.minimize();
+    } catch (e) {
+      console.error(e);
+    }
+  });
+
+  document.getElementById("max-btn").addEventListener("click", async () => {
+    try {
+      const w = getCurrentWindow();
+      if (w && typeof w.toggleMaximize === "function") await w.toggleMaximize();
+    } catch (e) {
+      console.error(e);
+    }
+  });
+
   document.getElementById("close-btn").addEventListener("click", async () => {
     try {
       const w = getCurrentWindow();

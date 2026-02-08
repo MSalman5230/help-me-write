@@ -20,10 +20,16 @@
     <div id="loading" class="loading hidden">Processing…</div>
 
     <div id="content">
-      <header class="header">
-        <button type="button" id="theme-btn" class="theme-btn" title="Toggle theme" aria-label="Toggle light/dark mode"><span id="theme-icon"></span></button>
+      <header class="header top-bar">
+        <div class="top-bar-left">
+          <button type="button" id="theme-btn" class="theme-btn" title="Toggle theme" aria-label="Toggle light/dark mode"><span id="theme-icon"></span></button>
+        </div>
         <div class="drag-handle" data-tauri-drag-region></div>
-        <button type="button" id="close-btn" class="close-btn" title="Close" aria-label="Close">×</button>
+        <div class="top-bar-right">
+          <button type="button" id="min-btn" class="win-btn win-btn-minimize" title="Minimize" aria-label="Minimize"><span class="win-btn-icon" id="min-icon"></span></button>
+          <button type="button" id="max-btn" class="win-btn win-btn-maximize" title="Maximize" aria-label="Maximize"><span class="win-btn-icon" id="max-icon"></span></button>
+          <button type="button" id="close-btn" class="win-btn win-btn-close" title="Close" aria-label="Close"><span class="win-btn-icon" id="close-icon"></span></button>
+        </div>
       </header>
 
       <div class="split-pane">
@@ -31,10 +37,10 @@
           <textarea id="original-text" class="text-area" placeholder="Paste or type text to fix"></textarea>
         </div>
         <div class="split-pane-col split-pane-output">
-          <div class="corrected-header">
-            <button type="button" id="copy-btn" class="btn btn-copy hidden" title="Copy to clipboard" aria-label="Copy to clipboard">Copy</button>
+          <div class="corrected-preview-wrap">
+            <button type="button" id="copy-inline-btn" class="copy-inline-btn hidden" title="Copy to clipboard" aria-label="Copy to clipboard">Copy</button>
+            <div id="corrected-preview" class="corrected-preview"></div>
           </div>
-          <div id="corrected-preview" class="corrected-preview"></div>
           <div id="explanation" class="explanation"></div>
         </div>
       </div>

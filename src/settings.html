@@ -15,10 +15,16 @@
 <body class="page-settings">
   <div class="app" data-tauri-drag-region>
     <div class="settings-content">
-      <header class="header">
+      <header class="header top-bar">
+        <div class="top-bar-left">
+          <button type="button" id="theme-btn" class="theme-btn" title="Toggle theme" aria-label="Toggle light/dark mode"><span id="theme-icon"></span></button>
+        </div>
         <div class="drag-handle" data-tauri-drag-region></div>
-        <button type="button" id="theme-btn" class="theme-btn" title="Toggle theme" aria-label="Toggle light/dark mode"><span id="theme-icon"></span></button>
-        <button type="button" id="close-btn" class="close-btn" title="Close" aria-label="Close">×</button>
+        <div class="top-bar-right">
+          <button type="button" id="min-btn" class="win-btn win-btn-minimize" title="Minimize" aria-label="Minimize"><span class="win-btn-icon" id="min-icon"></span></button>
+          <button type="button" id="max-btn" class="win-btn win-btn-maximize" title="Maximize" aria-label="Maximize"><span class="win-btn-icon" id="max-icon"></span></button>
+          <button type="button" id="close-btn" class="win-btn win-btn-close" title="Close" aria-label="Close"><span class="win-btn-icon" id="close-icon"></span></button>
+        </div>
       </header>
       <div class="settings-container">
         <h1 class="title">Settings</h1>

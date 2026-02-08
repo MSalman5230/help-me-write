@@ -21,13 +21,12 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(
             tauri_plugin_global_shortcut::Builder::new()
-                .with_handler(|app, shortcut, event| {
-                    if event.state == ShortcutState::Pressed  {
-                         // Using string comparison or storing the shortcut to compare? 
-                         // "Ctrl+Alt+G" logic
-                         // For now, assume single shortcut
-                         println!("Shortcut pressed!");
-                         handle_shortcut(app);
+                .with_handler(|app, _shortcut, event| {
+                    if event.state == ShortcutState::Pressed {
+                        let app = app.clone();
+                        std::thread::spawn(move || {
+                            handle_shortcut(&app);
+                        });
                     }
                 })
                 .build(),
@@ -109,7 +108,7 @@ pub fn run() {
         .expect("error while running tauri application");
 }
 
-#[cfg(target_os = "windows")]
+#[cfg(desktop)]
 fn open_settings_window(app: &AppHandle) {
     use tauri_plugin_window_state::{StateFlags, WindowExt};
 
@@ -159,13 +158,14 @@ fn get_text_for_popup(app: &AppHandle) -> String {
 
 fn handle_shortcut(app: &AppHandle) {
     #[cfg(target_os = "windows")]
-    {
-        let text = get_text_for_popup(app);
-        eprintln!("Selected text: {}", text);
-        open_popup_window(app, text);
-    }
+    let text = get_text_for_popup(app);
     #[cfg(not(target_os = "windows"))]
-    {
-        open_popup_window(app, String::new());
+    let text = String::new();
+
+    let app_for_main = app.clone();
+    if let Err(e) = app.run_on_main_thread(move || {
+        open_popup_window(&app_for_main, text);
+    }) {
+        eprintln!("run_on_main_thread failed: {}", e);
     }
 }

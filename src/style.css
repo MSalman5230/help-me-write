@@ -85,6 +85,14 @@ body {
   padding: 12px 24px 24px;
 }
 
+.app .header.top-bar {
+  background: var(--bg);
+  margin: -12px -24px 0;
+  padding: 4px 8px 4px 12px;
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  border-bottom: 1px solid var(--border);
+}
+
 .app .header {
   display: flex;
   align-items: center;
@@ -93,13 +101,22 @@ body {
   margin-top: -4px;
 }
 
+.app .top-bar-left,
+.app .top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
 .app .drag-handle {
   flex: 1;
   height: 20px;
   cursor: grab;
+  min-width: 0;
 }
 
-.app .close-btn {
+/* Window control and toolbar buttons (min, max, close, settings) */
+.app .win-btn {
   width: 34px;
   height: 34px;
   display: flex;
@@ -107,16 +124,31 @@ body {
   justify-content: center;
   background: none;
   border: none;
-  border-radius: var(--radius-input);
+  border-radius: var(--radius);
   color: var(--text-muted);
   cursor: pointer;
-  font-size: 20px;
   transition: color 0.15s, background 0.15s;
 }
 
-.app .close-btn:hover {
+.app .win-btn .win-btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app .win-btn .win-btn-icon svg {
+  display: block;
+  flex-shrink: 0;
+}
+
+.app .win-btn:hover {
   color: var(--text);
   background: var(--border);
+}
+
+.app .win-btn-close:hover {
+  color: #fff;
+  background: var(--error);
 }
 
 .app .theme-btn {
@@ -169,12 +201,39 @@ body {
   gap: var(--space-1);
 }
 
-.app .corrected-header {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  flex-shrink: 0;
+.app .corrected-preview-wrap {
+  position: relative;
+  flex: 1 1 0;
   min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.app .corrected-preview-wrap .copy-inline-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-family: var(--font);
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.app .corrected-preview-wrap:hover .copy-inline-btn:not(.hidden) {
+  opacity: 1;
+}
+
+.app .corrected-preview-wrap .copy-inline-btn:hover {
+  background: var(--border);
 }
 
 .app .corrected-preview {
@@ -294,16 +353,6 @@ body {
   background: var(--border);
 }
 
-.app .btn-copy {
-  min-width: auto;
-  padding: 6px 12px;
-  font-size: 13px;
-}
-
-.app .btn-copy:hover {
-  transform: scale(1.02);
-}
-
 .app .loading {
   position: absolute;
   inset: 0;
@@ -339,6 +388,14 @@ body {
   border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
   padding: 12px 18px 2px 18px;
+}
+
+.app .settings-content .header.top-bar {
+  margin: -12px -18px 0 -18px;
+  padding: 4px 8px 4px 12px;
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
 }
 
 .settings-container {
