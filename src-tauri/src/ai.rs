@@ -15,10 +15,20 @@ struct ChatMessage {
     content: String,
 }
 
+/// Request JSON object mode so the model returns only valid JSON (corrected text in our schema).
+#[derive(Serialize)]
+struct ResponseFormat {
+    #[serde(rename = "type")]
+    type_: String,
+}
+
 #[derive(Serialize)]
 struct ChatRequest {
     model: String,
     messages: Vec<ChatMessage>,
+    /// Enforces JSON output; supported by OpenAI and Ollama /v1/chat/completions.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    response_format: Option<ResponseFormat>,
 }
 
 // OpenAI-compatible response (minimal fields)
@@ -37,10 +47,10 @@ struct Message {
     content: Option<String>,
 }
 
+/// Structured output schema: we only use the corrected text.
 #[derive(Deserialize)]
 struct GrammarResponse {
     corrected: String,
-    explanation: Option<String>,
 }
 
 /// Returns the effective API base URL from provider and stored api_base.
@@ -79,9 +89,12 @@ fn default_model_for_base(base: &str) -> &'static str {
     }
 }
 
-const DEFAULT_SYSTEM_PROMPT: &str = r#"You are a grammar and style fixer. Given the user's text, reply with ONLY a single JSON object (no other text, no markdown). Use this exact shape:
+/// System prompt: we use response_format "json_object" which only enforces "valid JSON object",
+/// not which keys. So we must specify the shape here; otherwise the model might use different keys.
+/// (If we passed a full JSON schema via response_format, we could omit the shape from the prompt.)
+const DEFAULT_SYSTEM_PROMPT: &str = r#"You are a grammar and style fixer. Reply with a single JSON object only. Use this exact shape:
 {"corrected": "<the corrected text>"}
-No explanation. Output nothing but this JSON."#;
+Output nothing else. No explanation, no markdown."#;
 
 
 
@@ -135,6 +148,9 @@ pub async fn fix_grammar_with_config(text: String, config: &AppSettings) -> Resu
                 content: format!("Fix the grammar and style of this text:\n\n{}", text),
             },
         ],
+        response_format: Some(ResponseFormat {
+            type_: "json_object".to_string(),
+        }),
     };
 
     let user_message = &req.messages[1].content;
@@ -174,15 +190,15 @@ pub async fn fix_grammar_with_config(text: String, config: &AppSettings) -> Resu
     println!("[API response] {}", content);
 
     let json_content = strip_markdown_code_fence(content);
-    let (corrected, explanation) = match serde_json::from_str::<GrammarResponse>(json_content) {
-        Ok(gr) => (gr.corrected, gr.explanation),
-        Err(_) => (json_content.to_string(), Some("Could not parse explanation.".to_string())),
+    let corrected = match serde_json::from_str::<GrammarResponse>(json_content) {
+        Ok(gr) => gr.corrected,
+        Err(_) => json_content.to_string(),
     };
 
     Ok(Correction {
         original: text,
         corrected,
-        explanation,
+        explanation: None,
     })
 }
 
@@ -219,6 +235,7 @@ pub async fn test_connection(config: &AppSettings) -> Result<(), String> {
                 content: "test".to_string(),
             },
         ],
+        response_format: None,
     };
 
     let mut request_builder = client.post(&url).json(&req);
