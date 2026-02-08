@@ -41,7 +41,7 @@ A (Windows) background application that fixes grammar in any text input field us
 
 1.  Clone the repository:
     ```bash
-    git clone <your-repo-url>
+    git clone https://github.com/MSalman5230/help-me-write.git
     cd help-me-write
     ```
 
@@ -88,6 +88,6 @@ The workflow builds for **Windows** and **Linux** by default. To add macOS, unco
 
 The release workflow does **not** build or upload the portable ZIP. To create and publish it yourself:
 
-1. **Build** (on Windows): run `npm run build`. This runs `tauri build` and then creates a portable ZIP in `src-tauri/target/release/bundle/` (e.g. `Help Me Write_0.9.1_x64-portable.zip`).
+1. **Build** (on Windows): run `npm run build` or `node scripts/create-portable.js`. This runs `tauri build` and then creates a portable ZIP in `src-tauri/target/release/bundle/` (e.g. `Help Me Write_0.9.1_x64-portable.zip`).
 2. **Upload**: Open the matching GitHub Release (draft or published), then drag the portable ZIP into the release assets and publish or save the draft.
 
