@@ -66,8 +66,9 @@ pub fn run() {
                 let quit_i = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
                 let settings_i = MenuItem::with_id(app, "settings", "Settings", true, None::<&str>)?;
                 let menu = Menu::with_items(app, &[&open_i, &settings_i, &quit_i])?;
-                let icon = app.default_window_icon().cloned();
+                // Use 128x128 so the tray icon is sharp (Windows scales down from this)
                 let mut builder = TrayIconBuilder::new()
+                    .icon(tauri::include_image!("icons/128x128.png"))
                     .menu(&menu)
                     .show_menu_on_left_click(false)
                     .on_tray_icon_event(|tray, event| {
@@ -90,9 +91,6 @@ pub fn run() {
                             _ => {}
                         }
                     });
-                if let Some(icon) = icon {
-                    builder = builder.icon(icon);
-                }
                 let _tray = builder.build(app)?;
             }
             Ok(())
