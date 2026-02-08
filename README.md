@@ -1,4 +1,4 @@
-# AI Grammar Fixer
+# Help Me Write
 
 A cross-platform (Windows & macOS) background application that fixes grammar in any text input field using a global hotkey.
 

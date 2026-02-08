@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "AI Grammar Fixer",
+  "productName": "Help Me Write",
   "version": "0.1.0",
   "identifier": "com.ai-grammar-fixer.app",
   "build": {
@@ -10,7 +10,7 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "AI Grammar Fixer",
+        "title": "Help Me Write",
         "width": 1280,
         "height": 720,
         "decorations": false,
