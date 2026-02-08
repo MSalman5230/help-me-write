@@ -1,6 +1,6 @@
 # Help Me Write
 
-A cross-platform (Windows & macOS) background application that fixes grammar in any text input field using a global hotkey.
+A cross-platform (Windows) background application that fixes grammar in any text input field using a global hotkey.
 
 ## 🚀 Getting Started
 
