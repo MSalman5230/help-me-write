@@ -58,6 +58,13 @@ To publish installers (e.g. Windows `.exe` / installer) to **GitHub Releases**:
 
 The workflow builds for **Windows** and **Linux** by default. To add macOS, uncomment the `macos-latest` entries in `.github/workflows/release.yml`.
 
+### Portable build (manual)
+
+The release workflow does **not** build or upload the portable ZIP. To create and publish it yourself:
+
+1. **Build** (on Windows): run `npm run build`. This runs `tauri build` and then creates a portable ZIP in `src-tauri/target/release/bundle/` (e.g. `Help Me Write_0.9.1_x64-portable.zip`).
+2. **Upload**: Open the matching GitHub Release (draft or published), then drag the portable ZIP into the release assets and publish or save the draft.
+
 ## 🛠 Features
 
 *   **Global Hotkey**: Triggers from any application.
