@@ -33,7 +33,7 @@ npm run tauri dev
 ```
 
 *   The app runs in the background.
-*   Press **`Ctrl + Alt + G`** (Windows) or configured shortcut to trigger the UI.
+*   Press **`Ctrl + Shift + Space`** (Windows) or configured shortcut to trigger the UI[Todo].
 
 ### Building for Production
 
