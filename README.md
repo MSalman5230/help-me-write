@@ -7,7 +7,7 @@ A (Windows) background application that fixes grammar in any text input field us
 ### Prerequisites
 
 *   [Node.js](https://nodejs.org/) (current LTS)
-*   [Rust](https://www.rust-lang.org/tools/install)
+*   [Rust](https://www.rust-lang.org/tools/install) and [Cargo](https://doc.rust-lang.org/cargo/getting-started/installation.html) (Cargo is included when you install Rust via rustup)
 *   **Windows**: Build Tools for Visual Studio 2022.
 *   **macOS**: TODO.
 
